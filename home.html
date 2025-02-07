@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+      }
+      .container {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+      }
+      .outer {
+        position: absolute;
+        width: 170vw;
+        height: 185vh;
+        transform: translate(-50%, -50%);
+        left: 50%;
+        background: linear-gradient(#bdfe38, black);
+        border-radius: 48%;
+      }
+      .inner-circle {
+        position: absolute;
+        top: -450px;
+        left: 50%;
+        width: 600px;
+        height: 600px;
+        background-color: #bdfe38;
+        border-radius: 50%;
+        transform: translateX(-50%);
+      }
+      .inner-circle::before {
+        content: "";
+        background: #bdfe38;
+        height: 50px;
+        width: 50px;
+        rotate: 45deg;
+        bottom: -25px;
+        left: 50%;
+        transform: translateX(-60%);
+        z-index: 100;
+        position: absolute;
+      }
+      .cards-container {
+        position: absolute;
+        top: -50%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        height: 100%;
+      }
+      .card {
+        position: absolute;
+        width: 125px;
+        height: 250px;
+        background-color: rgba(0, 0, 0, 0.4);
+        border-radius: 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        transform-origin: center;
+        transition: transform 0.3s ease;
+        color: white;
+        border: 0;
+        padding: 0;
+      }
+      .card-title {
+        font-size: 16px;
+        margin: 0;
+        text-align: center;
+      }
+      .card-image {
+        width: 100%;
+        height: 202px;
+        border-radius: 0 0 30px 30px;
+        object-fit: cover;
+      }
+      .star-container {
+        display: flex;
+        align-items: center;
+      }
+      .star {
+        color: gold;
+        font-size: 20px;
+        margin-right: 5px;
+      }
+      .star-text {
+        font-size: 16px;
+      }
+      .bottom-text {
+        font-size: 12px;
+        color: #007bff;
+        cursor: pointer;
+        margin: 0;
+        position: absolute;
+        bottom: -10%;
+        left: 20%;
+        width: 100px;
+        color: #bcb7b7;
+        font-weight: 800;
+      }
+      .slider-container {
+        width: 400px;
+        height: 200px;
+        position: absolute;
+        bottom: 50px;
+      }
+
+      .curved-path {
+        stroke: #e5e7eb;
+        stroke-width: 4;
+        fill: none;
+        position: absolute;
+      }
+
+      .thumb {
+        width: 20px;
+        height: 20px;
+        background: white;
+        border: 2px solid #3b82f6;
+        border-radius: 50%;
+        position: absolute;
+        cursor: grab;
+        transform: translate(-50%, -50%);
+      }
+
+      .thumb:active {
+        cursor: grabbing;
+      }
+
+      .value-display {
+        text-align: center;
+        margin-top: 20px;
+        font-family: Arial, sans-serif;
+        position: absolute;
+        color: #bdfe38;
+        top: 520px;
+        z-index: 10000;
+      }
+
+      .text-circle {
+        position: absolute;
+        background: rgba(255, 0, 0, 0.3);
+        position: absolute;
+        top: 50%;
+        left: 30%;
+        transfrom: translateX(50%);
+      }
+      .hell {
+        z-index: 1000;
+        position: absolute;
+        top: 250px;
+      }
+      .card-title {
+        padding-top: 30px;
+      }
+      .star-wrapper {
+        position: absolute;
+        display: inline-block;
+        transform: scale(0.25);
+        bottom: -28%;
+        left: 15%;
+      }
+      .star {
+        width: 0;
+        height: 0;
+        margin: 50px 0;
+        color: #bdfe38;
+        position: relative;
+        display: block;
+        border-right: 100px solid transparent;
+        border-bottom: 70px solid #bdfe38;
+        border-left: 100px solid transparent;
+        transform: rotate(35deg);
+      }
+      .star:before {
+        border-bottom: 80px solid #bdfe38;
+        border-left: 30px solid transparent;
+        border-right: 30px solid transparent;
+        position: absolute;
+        height: 0;
+        width: 0;
+        top: -45px;
+        left: -65px;
+        display: block;
+        content: "";
+        transform: rotate(-35deg);
+      }
+      .star:after {
+        position: absolute;
+        display: block;
+        color: #bdfe38;
+        top: 3px;
+        left: -105px;
+        width: 0;
+        height: 0;
+        border-right: 100px solid transparent;
+        border-bottom: 70px solid #bdfe38;
+        border-left: 100px solid transparent;
+        transform: rotate(-70deg);
+        content: "";
+      }
+      .rating {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-family: Arial, sans-serif;
+        font-size: 40px;
+        font-weight: bold;
+        color: black;
+        z-index: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="outer"></div>
+      <svg width="800" height="800">
+        <circle cx="400" cy="-50" r="500" fill="lightblue" />
+      </svg>
+      <div class="inner-circle">
+        <svg viewBox="-150 -150 300 300" class="hell">
+          <path
+            id="curve1"
+            d="M-140,-130 A100,100 0 1,0 140,-130"
+            fill="none"
+            stroke="none"
+          />
+          <text font-family="Arial" font-size="10">
+            <textPath
+              href="#curve1"
+              startOffset="35%"
+              dominant-baseline="hanging"
+            >
+              <tspan text-anchor="middle" font-weight="bold" fill="grey">
+                Home
+              </tspan>
+            </textPath>
+          </text>
+          <text font-family="Arial" font-size="10">
+            <textPath
+              href="#curve1"
+              startOffset="51%"
+              dominant-baseline="hanging"
+            >
+              <tspan text-anchor="middle" font-weight="bold" fill="black">
+                Flavours
+              </tspan>
+            </textPath>
+          </text>
+          <text font-family="Arial" font-size="10">
+            <textPath
+              href="#curve1"
+              startOffset="66%"
+              dominant-baseline="hanging"
+            >
+              <tspan text-anchor="middle" font-weight="bold" fill="grey">
+                Requests
+              </tspan>
+            </textPath>
+          </text>
+        </svg>
+      </div>
+      <div class="cards-container"></div>
+    </div>
+    <div class="slider-container">
+      <svg width="100%" height="100%" viewBox="0 0 400 200">
+        <path
+          id="slidePath"
+          class="curved-path"
+          d="M 80 90 Q 210 180, 320 90"
+        />
+      </svg>
+      <div class="thumb" id="thumb"></div>
+    </div>
+    <div class="value-display">
+      Slide to Scroll <span id="value" style="display: none">0</span>
+    </div>
+
+    <script>
+      const cardsContainer = document.querySelector(".cards-container");
+      const thumb = document.getElementById("thumb");
+      const path = document.getElementById("slidePath");
+      const valueDisplay = document.getElementById("value");
+      const radius = 350;
+
+      const cardData = [
+        {
+          title: "Mango",
+          image:
+            "https://images.pexels.com/photos/1309583/pexels-photo-1309583.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+          rating: 4.8,
+        },
+        {
+          title: "Orange",
+          image:
+            "https://images.pexels.com/photos/2333857/pexels-photo-2333857.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+          rating: 4.9,
+        },
+        {
+          title: "Vanilla",
+          image:
+            "https://images.pexels.com/photos/1294943/pexels-photo-1294943.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+          rating: 4.7,
+        },
+        {
+          title: "Red Dessert",
+          image:
+            "https://images.pexels.com/photos/675439/pexels-photo-675439.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+          rating: 4.6,
+        },
+        {
+          title: "Apple",
+          image:
+            "https://images.pexels.com/photos/1352245/pexels-photo-1352245.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+          rating: 4.5,
+        },
+        {
+          title: "Banana",
+          image:
+            "https://images.pexels.com/photos/5061021/pexels-photo-5061021.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+          rating: 4.9,
+        },
+        {
+          title: "Licchi",
+          image:
+            "https://images.pexels.com/photos/8093460/pexels-photo-8093460.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+          rating: 4.7,
+        },
+        {
+          title: "Pineapple",
+          image:
+            "https://images.pexels.com/photos/3992373/pexels-photo-3992373.jpeg?auto=compress&cs=tinysrgb&w=600",
+          rating: 4.8,
+        },
+        {
+          title: "Vanilla",
+          image:
+            "https://images.pexels.com/photos/919273/pexels-photo-919273.jpeg?auto=compress&cs=tinysrgb&w=600",
+          rating: 4.6,
+        },
+        {
+          title: "Chocolate",
+          image:
+            "https://images.pexels.com/photos/1739347/pexels-photo-1739347.jpeg?auto=compress&cs=tinysrgb&w=600",
+          rating: 4.8,
+        },
+      ];
+
+      const cards = [];
+
+      const calculateCardAngle = (index) => {
+        return ((index - 1) / cardData.length) * 2.5 * Math.PI - Math.PI / 2;
+      };
+
+      const getNearestCardPosition = (currentRotation) => {
+        const currentRotationRad = (currentRotation * Math.PI) / 180;
+        let minDifference = Infinity;
+        let nearestPosition = 0;
+
+        cardData.forEach((_, index) => {
+          const cardAngle = calculateCardAngle(index);
+          const normalizedCurrentRotation =
+            ((currentRotationRad % (2 * Math.PI)) + 2 * Math.PI) %
+            (2 * Math.PI);
+          const difference = Math.abs(normalizedCurrentRotation - cardAngle);
+
+          if (difference < minDifference) {
+            minDifference = difference;
+            nearestPosition = cardAngle;
+          }
+        });
+
+        return (nearestPosition * 180) / Math.PI;
+      };
+
+      cardData.forEach((data, i) => {
+        const card = document.createElement("div");
+        card.classList.add("card");
+
+        const cardContent = document.createElement("div");
+        cardContent.classList.add("card-content");
+
+        const title = document.createElement("h3");
+        title.innerText = data.title;
+        title.classList.add("card-title");
+
+        const image = document.createElement("img");
+        image.src = data.image;
+        image.alt = `Image for ${data.title}`;
+        image.classList.add("card-image");
+
+        const bottomSection = document.createElement("div");
+        bottomSection.classList.add("bottom-section");
+
+        const starWrapper = document.createElement("div");
+        starWrapper.classList.add("star-wrapper");
+
+        const starDiv = document.createElement("div");
+        starDiv.classList.add("star");
+
+        const ratingDiv = document.createElement("div");
+        ratingDiv.classList.add("rating");
+        ratingDiv.innerText = data.rating.toFixed(1);
+
+        const bottomText = document.createElement("p");
+        bottomText.innerText = "Tap to explore";
+        bottomText.classList.add("bottom-text");
+
+        starWrapper.appendChild(starDiv);
+        starWrapper.appendChild(ratingDiv);
+
+        bottomSection.appendChild(starWrapper);
+        bottomSection.appendChild(bottomText);
+
+        cardContent.appendChild(title);
+        cardContent.appendChild(image);
+        cardContent.appendChild(bottomSection);
+
+        card.appendChild(cardContent);
+
+        cards.push(card);
+        cardsContainer.appendChild(card);
+      });
+
+      function updateCardPositions(rotation) {
+        const rotationRad = (rotation * Math.PI) / 180;
+
+        cards.forEach((card, i) => {
+          const baseAngle = calculateCardAngle(i);
+          const angle = baseAngle + rotationRad;
+
+          const x = radius * Math.cos(angle);
+          const y = radius * Math.sin(angle);
+
+          card.style.left = `calc(50% + ${x}px)`;
+          card.style.top = `calc(50% + ${y}px)`;
+          card.style.transform = `translate(-50%, -50%)`; // Removed rotation
+        });
+      }
+
+      // Get point coordinates along the path for a given percentage
+      function getPointAtPercentage(percentage) {
+        const length = path.getTotalLength();
+        const point = path.getPointAtLength(length * percentage);
+        return point;
+      }
+
+      // Update thumb position and value
+      function updatePosition(percentage) {
+        const point = getPointAtPercentage(percentage);
+        thumb.style.left = point.x + "px";
+        thumb.style.top = point.y + "px";
+        const rotation = Math.round(percentage * 360);
+        valueDisplay.textContent = rotation;
+        updateCardPositions(rotation);
+      }
+
+      // Initialize thumb position
+      updatePosition(0);
+
+      let isDragging = false;
+
+      // Handle mouse events for dragging
+      thumb.addEventListener("mousedown", () => {
+        isDragging = true;
+      });
+
+      document.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+
+        const svgRect = path.getBoundingClientRect();
+        const pathLength = path.getTotalLength();
+
+        // Find closest point on path to mouse position
+        let closestPoint = null;
+        let closestDistance = Infinity;
+        let closestPercentage = 0;
+
+        for (let i = 0; i <= 100; i++) {
+          const percentage = i / 100;
+          const point = getPointAtPercentage(percentage);
+          const pointX = point.x + svgRect.left;
+          const pointY = point.y + svgRect.top;
+
+          const distance = Math.hypot(e.clientX - pointX, e.clientY - pointY);
+
+          if (distance < closestDistance) {
+            closestDistance = distance;
+            closestPoint = point;
+            closestPercentage = percentage;
+          }
+        }
+
+        if (closestPoint) {
+          updatePosition(closestPercentage);
+        }
+      });
+
+      document.addEventListener("mouseup", () => {
+        isDragging = false;
+      });
+
+      // Handle touch events for dragging
+      thumb.addEventListener("touchstart", (e) => {
+        isDragging = true;
+        e.preventDefault(); // Prevent scrolling
+      });
+
+      document.addEventListener("touchmove", (e) => {
+        if (!isDragging) return;
+
+        const svgRect = path.getBoundingClientRect();
+        const pathLength = path.getTotalLength();
+
+        // Find closest point on path to touch position
+        let closestPoint = null;
+        let closestDistance = Infinity;
+        let closestPercentage = 0;
+
+        for (let i = 0; i <= 100; i++) {
+          const percentage = i / 100;
+          const point = getPointAtPercentage(percentage);
+          const pointX = point.x + svgRect.left;
+          const pointY = point.y + svgRect.top;
+
+          const distance = Math.hypot(
+            e.touches[0].clientX - pointX,
+            e.touches[0].clientY - pointY
+          );
+
+          if (distance < closestDistance) {
+            closestDistance = distance;
+            closestPoint = point;
+            closestPercentage = percentage;
+          }
+        }
+
+        if (closestPoint) {
+          updatePosition(closestPercentage);
+        }
+      });
+
+      document.addEventListener("touchend", () => {
+        isDragging = false;
+      });
+
+      // Handle clicks on the path
+      path.addEventListener("click", (e) => {
+        const svgRect = path.getBoundingClientRect();
+        const pathLength = path.getTotalLength();
+
+        // Find closest point on path to click position
+        let closestPoint = null;
+        let closestDistance = Infinity;
+        let closestPercentage = 0;
+
+        for (let i = 0; i <= 100; i++) {
+          const percentage = i / 100;
+          const point = getPointAtPercentage(percentage);
+          const pointX = point.x + svgRect.left;
+          const pointY = point.y + svgRect.top;
+
+          const distance = Math.hypot(e.clientX - pointX, e.clientY - pointY);
+
+          if (distance < closestDistance) {
+            closestDistance = distance;
+            closestPoint = point;
+            closestPercentage = percentage;
+          }
+        }
+
+        if (closestPoint) {
+          updatePosition(closestPercentage);
+        }
+      });
+
+      updateCardPositions(0);
+    </script>
+  </body>
+</html>
